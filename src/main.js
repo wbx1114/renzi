@@ -15,6 +15,13 @@ import router from './router'
 import '@/icons' // icon
 import '@/permission' // permission control
 
+import * as directives from '@/directives'
+// Vue.directive('imgerror', imgerror)
+
+Object.keys(directives).forEach(ele => {
+  Vue.directive(ele, directives[ele])
+})
+
 // if (process.env.NODE_ENV === 'production') {
 //   const { mockXHR } = require('../mock')
 //   mockXHR()
