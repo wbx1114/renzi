@@ -5,7 +5,7 @@ export default {
   component: Layout, // 组件
   children: [{
     path: '',
-    component: () => import('@/views/employees'),
+    component: () => import('@/views/social'),
     meta: {
       title: '社保',
       icon: 'table'

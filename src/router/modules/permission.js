@@ -5,7 +5,7 @@ export default {
   component: Layout, // 组件
   children: [{
     path: '',
-    component: () => import('@/views/employees'),
+    component: () => import('@/views/permission'),
     meta: {
       title: '权限管理',
       icon: 'lock'

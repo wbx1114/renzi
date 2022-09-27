@@ -5,7 +5,7 @@ export default {
   component: Layout, // 组件
   children: [{
     path: '',
-    component: () => import('@/views/employees'),
+    component: () => import('@/views/departments'),
     meta: {
       title: '组织架构',
       icon: 'tree'
