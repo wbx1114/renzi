@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    title="新增角色"
+    :title="title"
     width="50%"
     :visible.sync="dialogvisible"
     :before-close="handleBtn"
@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { addRole } from '@/api/setting'
+import { addRole, updateRole } from '@/api/setting'
 export default {
   props: {
     dialogvisible: {
@@ -46,18 +46,26 @@ export default {
       loading: false
     }
   },
+  computed: {
+    title() {
+      return this.formDate.id ? '编辑角色' : '新增角色'
+    }
+  },
   methods: {
     handleBtn() {
       this.$emit('update:dialogvisible', false)
       this.$refs.roleDialogForm.resetFields()
-      this.formDate.description = ''
+      this.formDate = {
+        name: '',
+        description: ''
+      }
     },
     async submit() {
       try {
         await this.$refs.roleDialogForm.validate()
         this.loading = true
-        await addRole(this.formDate)
-        this.$message.success('新增成功')
+        this.formDate.id ? await updateRole(this.formDate) : await addRole(this.formDate)
+        this.$message.success(this.formDate.id ? '编辑成功' : '新增成功')
         this.handleBtn()
         this.$emit('refreshList')
       } catch (error) {
