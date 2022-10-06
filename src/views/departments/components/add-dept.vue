@@ -1,6 +1,6 @@
 <template>
   <!-- 新增部门的弹层 -->
-  <el-dialog title="新增部门" :visible="showDialog" @close="handleClose">
+  <el-dialog :title="title" :visible="showDialog" @close="handleClose">
     <!-- 表单组件  el-form   label-width设置label的宽度   -->
     <!-- 匿名插槽 -->
     <el-form ref="addDeptForm" :model="formData" label-width="120px" :rules="rules">
@@ -31,7 +31,7 @@
 </template>
 <script>
 import { getEmployeeSimple, addDepartments } from '@/api/employees'
-import { getDepartments } from '@/api/departments'
+import { getDepartments, updateDepartments } from '@/api/departments'
 export default {
   props: {
     // eslint-disable-next-line vue/require-prop-types
@@ -47,14 +47,27 @@ export default {
   data() {
     const codeCheck = async(rules, value, callback) => {
       const { depts } = await getDepartments()
-      const isRepeat = depts.some(item => item.code === value)
+      let isRepeat = true
+      if (this.formData.id) {
+        isRepeat = depts.some(item => item.id !== this.formData.id && item.code === value)
+      } else {
+        isRepeat = depts.some(item => item.code === value)
+      }
       isRepeat ? callback(new Error(`组织架构中已经有部门使用${value}编码`)) : callback()
     }
     const nameCheck = async(rules, value, callback) => {
       const { depts } = await getDepartments()
-      const deptstj = depts.filter(item => item.pid === this.node.id)
-      console.log(deptstj)
-      const isRepeat = deptstj.some(item => item.name === value)
+      let isRepeat = true
+      if (this.formData.id) {
+        const deptstj1 = depts.filter(item => item.pid === this.node.pid && item.id !== this.node.id)
+        console.log(deptstj1)
+        isRepeat = deptstj1.some(item => item.name === value)
+      } else {
+        const deptstj = depts.filter(item => item.pid === this.node.id)
+        console.log(deptstj)
+        isRepeat = deptstj.some(item => item.name === value)
+      }
+
       isRepeat ? callback(new Error(`该部门下已经存在${value}部门名称`)) : callback()
     //   isRepeat ? callback(new Error(`组织架构中已经有部门使用${value}编码`)) : callback()
     }
@@ -95,6 +108,11 @@ export default {
       loading: false
     }
   },
+  computed: {
+    title() {
+      return this.formData.id ? '编辑部门' : '新增部门'
+    }
+  },
   methods: {
     handleClose() {
       this.$emit('update:showDialog', false)
@@ -118,7 +136,14 @@ export default {
         // 表单校验
         await this.$refs.addDeptForm.validate()
         this.loading = true
-        await addDepartments({ ...this.formData, pid: this.node.id })
+        if (this.formData.id) {
+          // 编辑模式  调用编辑接口
+          await updateDepartments({ ...this.formData })
+        } else {
+          // 新增模式
+          await addDepartments({ ...this.formData, pid: this.node.id }) // 调用新增接口 添加父部门的id
+        }
+        this.$message.success(`${this.formData.id ? '编辑' : '新增'}成功`)
         // 调用父组件重新渲染列表
         this.$parent.getDepartments()
         this.handleClose()

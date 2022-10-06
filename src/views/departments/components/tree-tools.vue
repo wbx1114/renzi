@@ -25,6 +25,7 @@
 </template>
 
 <script>
+import { delDepartments } from '@/api/departments'
 export default {
   props: {
     //   定义一个props属性
@@ -45,8 +46,20 @@ export default {
         this.$emit('addDepts', this.treeNode)
       } else if (type === 'edit') {
         // 编辑
+        this.$emit('editDepts', this.treeNode)
       } else {
         // 删除
+        this.$confirm('是否确认删除该部门?', '提示', {
+          type: 'warning'
+        }).then(async res => {
+          return delDepartments(this.treeNode.id)
+        }).then(res => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+          this.$emit('refshList')
+        })
       }
     }
   }
