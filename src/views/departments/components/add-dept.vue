@@ -11,8 +11,8 @@
         <el-input v-model="formData.code" style="width:80%" placeholder="1-50个字符" />
       </el-form-item>
       <el-form-item label="部门负责人" prop="manager">
-        <el-select v-model="formData.manager" style="width:80%" placeholder="请选择">
-          <el-option label="username11" value="username" />
+        <el-select v-model="formData.manager" style="width:80%" placeholder="请选择" @focus="getEmployeeSimple">
+          <el-option v-for="item in people" :key="item.id" :label="item.username" :value="item.username" />
         </el-select>
       </el-form-item>
       <el-form-item label="部门介绍" prop="introduce">
@@ -23,13 +23,14 @@
     <el-row slot="footer" type="flex" justify="center">
       <!-- 列被分为24 -->
       <el-col :span="6">
-        <el-button type="primary" size="small">确定</el-button>
-        <el-button size="small">取消</el-button>
+        <el-button v-loading="loading" type="primary" size="small" @click="submit">确定</el-button>
+        <el-button size="small" @click="handleClose">取消</el-button>
       </el-col>
     </el-row>
   </el-dialog>
 </template>
 <script>
+import { getEmployeeSimple, addDepartments } from '@/api/employees'
 import { getDepartments } from '@/api/departments'
 export default {
   props: {
@@ -89,13 +90,43 @@ export default {
           { required: true, message: '部门介绍必填', trigger: 'blur' },
           { min: 1, max: 300, message: '部门编码1-300个字符', trigger: 'blur' }
         ]
-      }
+      },
+      people: [],
+      loading: false
     }
   },
   methods: {
     handleClose() {
       this.$emit('update:showDialog', false)
+      // 重置表单
       this.$refs.addDeptForm.resetFields()
+      this.formData = {
+        name: '', // 部门名称
+        code: '', // 部门编码
+        manager: '', // 部门管理者
+        introduce: '' // 部门介绍
+      }
+    },
+    async  getEmployeeSimple() {
+      const data = await getEmployeeSimple()
+      console.log(data)
+      this.people = data
+    },
+    // 添加子部门
+    async submit() {
+      try {
+        // 表单校验
+        await this.$refs.addDeptForm.validate()
+        this.loading = true
+        await addDepartments({ ...this.formData, pid: this.node.id })
+        // 调用父组件重新渲染列表
+        this.$parent.getDepartments()
+        this.handleClose()
+      } catch (error) {
+        console.log(error)
+      } finally {
+        this.loading = false
+      }
     }
   }
 }
