@@ -22,6 +22,8 @@ Object.keys(directives).forEach(ele => {
   Vue.directive(ele, directives[ele])
 })
 
+import Component from '@/components'
+Vue.use(Component) // 注册自己的插件
 // if (process.env.NODE_ENV === 'production') {
 //   const { mockXHR } = require('../mock')
 //   mockXHR()

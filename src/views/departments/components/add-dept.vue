@@ -30,7 +30,7 @@
   </el-dialog>
 </template>
 <script>
-import { getEmployeeSimple, addDepartments } from '@/api/employees'
+import { getEmployeeSimple, addDepartments } from '@/api/permission'
 import { getDepartments, updateDepartments } from '@/api/departments'
 export default {
   props: {
