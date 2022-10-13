@@ -61,3 +61,42 @@ export function importEmployee(data) {
     data
   })
 }
+/** *
+ *  读取用户详情的基础信息
+ * **/
+export function getPersonalDetail(id) {
+  return request({
+    url: `/employees/${id}/personalInfo`
+  })
+}
+
+/** *
+ *  保存员工信息
+ * **/
+export function saveEmpoyeesInfo(data) {
+  return request({
+    url: `/employees/${data.userId}/personalInfo`,
+    method: 'put',
+    data
+  })
+}
+/**
+ *获取员工岗位信息
+ * @param {*} id 员工Id
+ * @returns
+ */
+export function getJobDetail(id) {
+  return request({
+    url: `/employees/${id}/jobs`
+  })
+}
+/**
+ * 保存岗位信息
+ * ****/
+export function updateJob(data) {
+  return request({
+    url: `/employees/${data.userId}/jobs`,
+    method: 'put',
+    data
+  })
+}
