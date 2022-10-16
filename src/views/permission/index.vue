@@ -15,6 +15,9 @@
     <el-card>
       <el-table v-loading="loading" border :data="list">
         <el-table-column label="序号" sortable="" width="80" type="index" />
+        <el-table-column label="头像" prop="username">
+          <template slot-scope="{ row }"><img style="border-radius: 50%;width:100px;height:100px" :src="row.staffPhoto" @click="picBtn(row.staffPhoto)"></template>
+        </el-table-column>
         <el-table-column label="姓名" prop="username" />
         <el-table-column label="工号" prop="workNumber" />
         <el-table-column label="聘用形式" prop="formOfEmployment" :formatter="formatEmployment" />
@@ -39,6 +42,15 @@
           </template>
         </el-table-column>
       </el-table>
+      <!-- 二维码弹层 -->
+      <el-dialog
+        title="预览头像"
+        :visible.sync="dialogVisibleCode"
+        width="50%"
+        @close="dialogVisibleCode=false"
+      >
+        <canvas ref="canvas" />
+      </el-dialog>
       <!-- 分页组件 -->
       <el-row type="flex" justify="end" align="middle" style="height: 60px">
         <el-pagination
@@ -60,6 +72,7 @@ import EmployeeEnum from '@/api/constant/employees'
 import PageTools from '@/components/PageTools'
 import { getEmployeeList, delEmployee } from '@/api/permission'
 import addEmploy from './components/addEmploy.vue'
+import QRCode from 'qrcode'
 export default {
   name: 'HrsaasIndex',
   components: {
@@ -78,7 +91,8 @@ export default {
       total: 0,
       loading: false,
       hireType: EmployeeEnum.hireType,
-      isAddDialog: false
+      isAddDialog: false,
+      dialogVisibleCode: false
     }
   },
 
@@ -155,11 +169,23 @@ export default {
     },
     detail(row) {
       this.$router.push('/permission/detail/' + row.id)
+    },
+    picBtn(staffPhoto) {
+      if (!staffPhoto) return this.$message.error('暂无头像')
+      this.dialogVisibleCode = true
+
+      this.$nextTick(() => {
+        QRCode.toCanvas(this.$refs.canvas, staffPhoto, function(error) {
+          if (error) {
+            console.error(error)
+            console.log('success!')
+          }
+        })
+      })
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-
 </style>

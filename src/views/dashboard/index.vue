@@ -1,24 +1,31 @@
 <template>
   <div class="dashboard-container">
-    <div class="dashboard-text">name: {{ name }}</div>
-    <svg-icon icon-class="eye-open" />
+    <UpdateImg @onSuccess="onSuccess1" />
+    <UpdateImg @onSuccess="onSuccess2" />
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import UpdateImg from '@/components/UpdateImg'
 export default {
   name: 'Dashboard',
+  components: {
+    UpdateImg
+  },
   computed: {
     ...mapGetters([
       'name'
     ])
   },
   methods: {
+    onSuccess1(val) {
+      console.log(123, val)
+    },
+    onSuccess2(val) {
+      console.log(456, val)
+    }
   }
-  // created() {
-  //   this.$store.dispatch('user/getUserInfo')
-  // }
 }
 </script>
 
