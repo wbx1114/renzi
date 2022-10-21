@@ -4,7 +4,7 @@
       <el-tabs v-model="activeName">
         <el-tab-pane label="角色管理" name="first">
           <el-row :gutter="10">
-            <el-button v-isHas="'role-add'" size="small" type="primary" style="margin-left:10px" @click="divisible=true">新增角色</el-button>
+            <el-button :disabled="ishasPermission('role-add')" size="small" type="primary" style="margin-left:10px" @click="divisible=true">新增角色</el-button>
           </el-row>
           <el-table
             v-loading="loading"
@@ -32,8 +32,8 @@
             >
               <template slot-scope="{row}">
                 <el-button size="small" type="success" @click="showSetPromission(row)">分配权限</el-button>
-                <el-button v-isHas="'role-edit'" type="primary" size="small" @click="editRole(row)">编辑</el-button>
-                <el-button v-isHas="'role-del'" size="small" type="danger" @click="delRole(row.id)">删除</el-button>
+                <el-button :disabled="ishasPermission('role-edit')" type="primary" size="small" @click="editRole(row)">编辑</el-button>
+                <el-button :disabled="ishasPermission('role-delete')" size="small" type="danger" @click="delRole(row.id)">删除</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -87,12 +87,14 @@ import { getRoleList, deleteRole, getCompanyInfo } from '@/api/setting'
 import addRole from './components/addRole.vue'
 import { mapGetters } from 'vuex'
 import SetPromission from './components/setPromission.vue'
+import ishasPermission from '@/mixins/btnPermission'
 export default {
   name: 'HrsaasIndex',
   components: {
     addRole,
     SetPromission
   },
+  mixins: [ishasPermission],
   data() {
     return {
       activeName: 'first',

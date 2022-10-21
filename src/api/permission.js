@@ -100,3 +100,15 @@ export function updateJob(data) {
     data
   })
 }
+/**
+ * 给员工分配角色
+ * @param {*} data
+ * @returns
+ */
+export function setEmployeesRoles(data) {
+  return request({
+    url: `/sys/user/assignRoles`,
+    method: 'put',
+    data
+  })
+}

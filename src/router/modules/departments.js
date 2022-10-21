@@ -1,10 +1,15 @@
 import Layout from '@/layout'
 export default {
   path: '/departments', // 路径
-  name: 'departments', // 给路由规则加一个name
+  name: 'departments',
+  meta: {
+    id: 'departments'
+  }, // 给路由规则加一个name
   component: Layout, // 组件
   children: [{
     path: '',
+    name: 'departments',
+
     component: () => import('@/views/departments'),
     meta: {
       title: '组织架构',

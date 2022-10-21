@@ -1,5 +1,6 @@
 import { login } from '@/api/login'
 import { getUserInfoAPI, getUserDetailById } from '@/api/user'
+import resetRouter from '@/router'
 export default {
   namespaced: true,
   state: {
@@ -32,15 +33,18 @@ export default {
     },
     async  getUserInfo({ commit }) {
       const res1 = await getUserInfoAPI()
+      const points = ['role-add', 'role-edit']
+      res1.roles.points = points
       const res2 = await getUserDetailById(res1.userId)
       console.log(res2)
       const res = { ...res1, ...res2 }
       commit('SET_USER_INFO', res)
-      return JSON.parse(JSON.stringify(res))
+      return res.roles
     },
     logout({ commit }) {
       commit('DEL_USERINFO')
       commit('DEL_TOKEN')
+      resetRouter()
     }
   }
 }

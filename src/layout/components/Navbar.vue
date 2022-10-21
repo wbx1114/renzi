@@ -1,16 +1,16 @@
 <template>
   <div class="navbar">
     <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
-
     <!-- <breadcrumb class="breadcrumb-container" /> -->
     <div class="app-breadcrumb">
       江苏传智播客教育科技股份有限公司
       <span class="breadBtn">体验版</span>
     </div>
-
     <div class="right-menu">
+      <taggleLang />
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
+          <ScreenFull style="margin-right:20px" />
           <img v-imgerror="defaultImg" :src="staffPhoto" class="user-avatar"><span>{{ name }}</span>
           <i class="el-icon-caret-bottom" />
         </div>
@@ -31,14 +31,17 @@
 
 <script>
 import { mapGetters } from 'vuex'
-// import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 import defaultImg from '@/assets/common/head.jpg'
+import ScreenFull from './ScreenFull'
+import taggleLang from '@/components/taggleLang'
 
 export default {
   components: {
     // Breadcrumb,
-    Hamburger
+    Hamburger,
+    ScreenFull,
+    taggleLang
   },
   data() {
     return {

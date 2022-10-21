@@ -1,3 +1,4 @@
+import store from '@/store'
 export const imgerror = {
   inserted: function(el, binding, vnode) {
     // el:指令绑定的元素
@@ -9,5 +10,16 @@ export const imgerror = {
     el.onerror = function() {
       el.src = binding.value
     }
+  }
+}
+export const isHas = {
+  inserted(el, binding) {
+    // el:指令绑定的元素
+    const isHas = store.state.user.userInfo.roles.points.includes(binding.value)
+    if (isHas) return
+    el.remove()
+  },
+  bind() {
+    console.log(123)
   }
 }

@@ -2,7 +2,7 @@
   <div class="page-tools">
     <el-card>
       <el-row type="flex" justify="space-between" align="middle">
-        <el-col>
+        <el-col v-show="showBefore">
           <div :class="`before ${type}`">
             <i :class="`el-icon-${type}`" />
             <!-- 定义前面得插槽 -->

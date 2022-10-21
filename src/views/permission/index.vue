@@ -6,7 +6,7 @@
       </template>
       <template #after>
         <el-button size="small" type="warning" @click="$router.push('/import')">导入</el-button>
-        <el-button size="small" type="danger" @click="exportExcel">导出</el-button>
+        <el-button size="small" type="danger" :disabled="ishasPermission('role-export')" @click="exportExcel">导出</el-button>
         <el-button size="small" type="primary" @click="addEmploy">新增员工</el-button>
         <addEmploy :is-add-dialog.sync="isAddDialog" />
       </template>
@@ -37,7 +37,7 @@
             <el-button type="text" size="small">转正</el-button>
             <el-button type="text" size="small">调岗</el-button>
             <el-button type="text" size="small">离职</el-button>
-            <el-button type="text" size="small">角色</el-button>
+            <el-button type="text" size="small" @click="setRole(row)">角色</el-button>
             <el-button type="text" size="small" @click="del(row.id)">删除</el-button>
           </template>
         </el-table-column>
@@ -51,6 +51,8 @@
       >
         <canvas ref="canvas" />
       </el-dialog>
+      <!-- 角色弹层 -->
+      <AssignRole :role-visible.sync="Rolevisible" :user-id="currentId" />
       <!-- 分页组件 -->
       <el-row type="flex" justify="end" align="middle" style="height: 60px">
         <el-pagination
@@ -73,12 +75,17 @@ import PageTools from '@/components/PageTools'
 import { getEmployeeList, delEmployee } from '@/api/permission'
 import addEmploy from './components/addEmploy.vue'
 import QRCode from 'qrcode'
+import AssignRole from './components/assign-role.vue'
+import ishasPermission from '@/mixins/btnPermission'
+
 export default {
   name: 'HrsaasIndex',
   components: {
     PageTools,
-    addEmploy
+    addEmploy,
+    AssignRole
   },
+  mixins: [ishasPermission],
   data() {
     return {
       type: 'info',
@@ -92,7 +99,9 @@ export default {
       loading: false,
       hireType: EmployeeEnum.hireType,
       isAddDialog: false,
-      dialogVisibleCode: false
+      dialogVisibleCode: false,
+      Rolevisible: false,
+      currentId: ''
     }
   },
 
@@ -182,6 +191,10 @@ export default {
           }
         })
       })
+    },
+    setRole(row) {
+      this.currentId = row.id
+      this.Rolevisible = true
     }
   }
 }
